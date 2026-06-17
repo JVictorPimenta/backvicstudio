@@ -1,0 +1,70 @@
+# Dependências
+node_modules/
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Arquivos temporários
+tmp/
+temp/
+.cache/
+
+# Cobertura de testes
+coverage/
+.nyc_output/
+
+# Build / Distribuição
+dist/
+build/
+
+# Sequelize
+seeders/*.js.map
+migrations/*.js.map
+
+# Banco de dados local (SQLite)
+*.sqlite
+*.sqlite3
+*.db
+
+# Uploads locais (se aplicável)
+uploads/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Configurações de IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos de runtime
+pids/
+*.pid
+*.pid.lock
+
+# Relatórios de erro
+*.stackdump
+
+# Cache do Node
+.eslintcache
+
+# Arquivos gerados pelo TypeScript (caso utilize)
+*.tsbuildinfo
+
+# Docker (opcional)
+.docker/
+
+# Testes
+junit.xml
