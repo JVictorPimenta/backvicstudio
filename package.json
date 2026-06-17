@@ -1,0 +1,21 @@
+{
+  "name": "vicstudio-backend",
+  "version": "1.0.0",
+  "description": "API MVC para gestao do estudio de fotografia VicStudio",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.20.0",
+    "sequelize": "^6.37.8"
+  }
+}
