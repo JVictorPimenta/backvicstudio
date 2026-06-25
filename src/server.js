@@ -31,16 +31,15 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
-app.use(authMiddleware);
-app.use("/clients", clientRouter);
-app.use("/services", serviceRouter);
-app.use("/appointments", appointmentRouter);
-app.use("/contracts", contractRouter);
-app.use("/financial-entries", financialEntryRouter);
-app.use("/sales", saleRouter);
-app.use("/reports", reportRouter);
-app.use("/settings", roleMiddleware("admin"), settingRouter);
-app.use("/users", roleMiddleware("admin"), userRouter);
+app.use("/clients", authMiddleware, clientRouter);
+app.use("/services", authMiddleware, serviceRouter);
+app.use("/appointments", authMiddleware, appointmentRouter);
+app.use("/contracts", authMiddleware, contractRouter);
+app.use("/financial-entries", authMiddleware, financialEntryRouter);
+app.use("/sales", authMiddleware, saleRouter);
+app.use("/reports", authMiddleware, reportRouter);
+app.use("/settings", authMiddleware, roleMiddleware("admin"), settingRouter);
+app.use("/users", authMiddleware, roleMiddleware("admin"), userRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

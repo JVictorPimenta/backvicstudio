@@ -16,6 +16,9 @@ Appointment.belongsTo(Service, { foreignKey: "serviceId", as: "service" });
 User.hasMany(Appointment, { foreignKey: "responsibleId", as: "appointments" });
 Appointment.belongsTo(User, { foreignKey: "responsibleId", as: "responsible" });
 
+User.hasMany(Appointment, { foreignKey: "userId", as: "requestedAppointments" });
+Appointment.belongsTo(User, { foreignKey: "userId", as: "user" });
+
 Client.hasMany(Contract, { foreignKey: "clientId", as: "contracts" });
 Contract.belongsTo(Client, { foreignKey: "clientId", as: "client" });
 

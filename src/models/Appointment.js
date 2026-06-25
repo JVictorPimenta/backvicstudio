@@ -6,6 +6,10 @@ const Appointment = sequelize.define("Appointment", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   startAt: {
     type: DataTypes.DATE,
     allowNull: false,

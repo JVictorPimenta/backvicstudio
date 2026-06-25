@@ -22,11 +22,13 @@ const authController = {
         return res.status(409).json({ message: "Email ja cadastrado" });
       }
 
+      const normalizedRole = req.user?.role === "admin" ? role || "cliente" : "cliente";
+
       const user = await User.create({
         name,
         email,
         password: await bcrypt.hash(password, 10),
-        role: role || "colaborador",
+        role: normalizedRole,
       });
 
       return res.status(201).json(serializeUser(user));
