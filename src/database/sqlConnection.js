@@ -1,15 +1,17 @@
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: "postgres",
-  protocol: "postgres",
+const sequelize = new Sequelize(
+  process.env.DB_NAME || "vicstudio",
+  process.env.DB_USER || "root",
+  process.env.DB_PASSWORD || "",
+  {
+    host: process.env.DB_HOST || "localhost",
+    dialect: "mysql",
+    port: Number(process.env.DB_PORT) || 3306,
   logging: process.env.DB_LOGGING === "true" ? console.log : false,
-  dialectOptions: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
+
   },
-});
+);
 
 async function connect() {
   try {
