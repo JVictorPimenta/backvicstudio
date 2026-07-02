@@ -45,9 +45,9 @@ app.use("/clients", clientRouter);
 app.use("/services", serviceRouter);
 app.use("/appointments", appointmentRouter);
 app.use("/contracts", contractRouter);
-app.use("/financial-entries", financialEntryRouter);
+app.use("/financial-entries", roleMiddleware("admin", "financeiro"), financialEntryRouter);
 app.use("/sales", saleRouter);
-app.use("/reports", reportRouter);
+app.use("/reports", roleMiddleware("admin", "financeiro"), reportRouter);
 app.use("/settings", roleMiddleware("admin"), settingRouter);
 app.use("/users", roleMiddleware("admin"), userRouter);
 
