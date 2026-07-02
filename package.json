@@ -1,7 +1,7 @@
 {
-  "name": "vicstudio-backend",
+  "name": "luz-e-sombra-backend",
   "version": "1.0.0",
-  "description": "API MVC para gestao do estudio de fotografia VicStudio",
+  "description": "API MVC para gestao do estudio fotografico Luz & Sombra",
   "type": "module",
   "main": "src/server.js",
   "scripts": {

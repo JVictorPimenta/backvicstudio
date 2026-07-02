@@ -6,6 +6,11 @@ const Appointment = sequelize.define("Appointment", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  shootType: {
+    type: DataTypes.ENUM("casamento", "gestante"),
+    allowNull: false,
+    defaultValue: "casamento",
+  },
   startAt: {
     type: DataTypes.DATE,
     allowNull: false,

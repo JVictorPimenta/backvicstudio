@@ -10,7 +10,7 @@ async function authMiddleware(req, res, next) {
     }
 
     const token = header.replace("Bearer ", "");
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "vicstudio-dev");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "luz-sombra-dev");
     const user = await User.findByPk(decoded.id);
 
     if (!user || user.status !== "ativo") {

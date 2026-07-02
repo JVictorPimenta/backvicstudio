@@ -5,7 +5,7 @@ const Setting = sequelize.define("Setting", {
   studioName: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: "VicStudio",
+    defaultValue: "Luz & Sombra",
   },
   document: {
     type: DataTypes.STRING,

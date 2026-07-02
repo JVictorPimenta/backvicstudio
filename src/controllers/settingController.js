@@ -3,7 +3,7 @@ import { Setting } from "../models/index.js";
 async function getSettingRecord() {
   const [setting] = await Setting.findOrCreate({
     where: { id: 1 },
-    defaults: { studioName: "VicStudio" },
+    defaults: { studioName: "Luz & Sombra" },
   });
 
   return setting;

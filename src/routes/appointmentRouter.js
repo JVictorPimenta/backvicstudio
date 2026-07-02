@@ -4,11 +4,13 @@ import createCrudRouter from "./crudRouterFactory.js";
 
 function validation(required = true) {
   const title = required ? body("title") : body("title").optional({ values: "falsy" });
+  const shootType = required ? body("shootType") : body("shootType").optional({ values: "falsy" });
   const startAt = required ? body("startAt") : body("startAt").optional({ values: "falsy" });
   const endAt = required ? body("endAt") : body("endAt").optional({ values: "falsy" });
 
   return [
     title.trim().notEmpty().withMessage("Titulo obrigatorio"),
+    shootType.isIn(["casamento", "gestante"]).withMessage("Tipo de ensaio invalido"),
     startAt.isISO8601().withMessage("Inicio invalido"),
     endAt.isISO8601().withMessage("Fim invalido"),
     body("clientId").optional({ values: "falsy" }).isInt({ min: 1 }).withMessage("Cliente invalido"),

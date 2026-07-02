@@ -8,7 +8,7 @@ async function ensureDefaultAdmin() {
   const [user, created] = await User.findOrCreate({
     where: { email },
     defaults: {
-      name: "Administrador VicStudio",
+      name: "Administrador Luz & Sombra",
       email,
       password: await bcrypt.hash(password, 10),
       role: "admin",

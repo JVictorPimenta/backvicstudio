@@ -2,7 +2,7 @@ import "./config/loadEnv.js";
 import express, { json } from "express";
 import cors from "cors";
 import corsOptions from "./config/cors.js";
-import { connect } from "./database/sqlConnection.js";
+import { connect, sequelize } from "./database/sqlConnection.js";
 import ensureDefaultAdmin from "./bootstrap/ensureDefaultAdmin.js";
 import authMiddleware from "./middlewares/authMiddleware.js";
 import roleMiddleware from "./middlewares/roleMiddleware.js";
@@ -27,7 +27,16 @@ app.use(cors(corsOptions));
 app.use(json());
 
 app.get("/", (req, res) => {
-  res.json({ message: "API VicStudio ativa" });
+  res.json({ message: "API Luz & Sombra ativa" });
+});
+
+app.get("/health", async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    return res.json({ status: "ok", database: "connected" });
+  } catch (error) {
+    return res.status(503).json({ status: "error", database: "disconnected" });
+  }
 });
 
 app.use("/auth", authRouter);

@@ -15,7 +15,7 @@ function serializeUser(user) {
 const authController = {
   register: async (req, res) => {
     try {
-      const { name, email, password, role } = req.body;
+      const { name, email, password } = req.body;
       const existingUser = await User.findOne({ where: { email } });
 
       if (existingUser) {
@@ -26,7 +26,7 @@ const authController = {
         name,
         email,
         password: await bcrypt.hash(password, 10),
-        role: role || "colaborador",
+        role: "colaborador",
       });
 
       return res.status(201).json(serializeUser(user));
@@ -52,7 +52,7 @@ const authController = {
 
       const token = jwt.sign(
         { id: user.id, role: user.role },
-        process.env.JWT_SECRET || "vicstudio-dev",
+        process.env.JWT_SECRET || "luz-sombra-dev",
         { expiresIn: "8h" }
       );
 
