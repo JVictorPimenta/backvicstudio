@@ -1,4 +1,4 @@
-import { Appointment } from "../models/index.js";
+import { Op } from "sequelize";
 
 const include = [
   { association: "client", attributes: ["id", "name", "phone"] },
@@ -13,26 +13,79 @@ function isAdmin(user) {
 }
 
 function getAccessWhere(req) {
+  if (!req?.user) {
+    return { id: -1 };
+  }
+
   if (isAdmin(req.user)) {
     return {};
   }
 
-  return { responsibleId: req.user?.id };
+  return { responsibleId: req.user.id };
 }
 
 function buildPayload(body, req) {
   const payload = { ...body };
 
-  if (!isAdmin(req.user)) {
-    payload.responsibleId = req.user?.id;
+  if (!req?.user || !isAdmin(req.user)) {
+    payload.responsibleId = req?.user?.id ?? null;
   }
 
   return payload;
 }
 
-export default {
+function validateAppointmentSlot(date) {
+  const slotDate = new Date(date);
+  const day = slotDate.getDay();
+  const hours = slotDate.getHours();
+  const minutes = slotDate.getMinutes();
+
+  const isWeekday = day >= 1 && day <= 5;
+  const isAllowedHour = (hours === 10 || hours === 18) && minutes === 0;
+
+  return {
+    valid: isWeekday && isAllowedHour,
+    reason: isWeekday && isAllowedHour ? null : 'Apenas dias úteis às 10h ou às 18h, em ponto.',
+  };
+}
+
+async function checkAppointmentConflict(Appointment, startAt, currentId = null) {
+  if (!startAt) {
+    return null;
+  }
+
+  const where = {
+    startAt: new Date(startAt),
+    status: { [Op.ne]: 'cancelado' },
+  };
+
+  if (currentId) {
+    where.id = { [Op.ne]: currentId };
+  }
+
+  return Appointment.findOne({ where });
+}
+
+async function loadAppointmentModel() {
+  const { Appointment } = await import("../models/index.js");
+  return Appointment;
+}
+
+const appointmentController = {
   create: async (req, res) => {
     try {
+      const Appointment = await loadAppointmentModel();
+      const slot = validateAppointmentSlot(req.body?.startAt);
+
+      if (!slot.valid) {
+        return res.status(400).json({ message: slot.reason });
+      }
+
+      const conflict = await checkAppointmentConflict(Appointment, req.body?.startAt);
+      if (conflict) {
+        return res.status(409).json({ message: 'Este horário já foi escolhido por outro agendamento.' });
+      }
+
       const record = await Appointment.create(buildPayload(req.body, req));
       const created = await Appointment.findByPk(record.id, { include });
 
@@ -44,6 +97,7 @@ export default {
 
   list: async (req, res) => {
     try {
+      const Appointment = await loadAppointmentModel();
       const records = await Appointment.findAll({
         where: getAccessWhere(req),
         include,
@@ -58,6 +112,7 @@ export default {
 
   getById: async (req, res) => {
     try {
+      const Appointment = await loadAppointmentModel();
       const record = await Appointment.findOne({
         where: {
           id: req.params.id,
@@ -78,6 +133,7 @@ export default {
 
   update: async (req, res) => {
     try {
+      const Appointment = await loadAppointmentModel();
       const record = await Appointment.findOne({
         where: {
           id: req.params.id,
@@ -87,6 +143,18 @@ export default {
 
       if (!record) {
         return res.status(404).json({ message: "Registro nao encontrado" });
+      }
+
+      const newStartAt = req.body?.startAt ?? record.startAt;
+      const slot = validateAppointmentSlot(newStartAt);
+
+      if (!slot.valid) {
+        return res.status(400).json({ message: slot.reason });
+      }
+
+      const conflict = await checkAppointmentConflict(Appointment, newStartAt, record.id);
+      if (conflict) {
+        return res.status(409).json({ message: 'Este horário já foi escolhido por outro agendamento.' });
       }
 
       await record.update(buildPayload(req.body, req, record));
@@ -100,6 +168,7 @@ export default {
 
   delete: async (req, res) => {
     try {
+      const Appointment = await loadAppointmentModel();
       const record = await Appointment.findOne({
         where: {
           id: req.params.id,
@@ -119,3 +188,6 @@ export default {
     }
   },
 };
+
+export { isAdmin, getAccessWhere, buildPayload, validateAppointmentSlot };
+export default appointmentController;
